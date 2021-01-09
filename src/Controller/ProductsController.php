@@ -13,22 +13,9 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/products')]
 class ProductsController extends AbstractController
 {
-    #[Route('/', name: 'products_index', methods: ['GET'])]
-    public function index(ProductsRepository $productsRepository, Request $request): Response
+    #[Route('/home', name: 'products_index', methods: ['GET'])]
+    public function index(ProductsRepository $productsRepository): Response
     {
-        $product = new Products();
-        $form = $this->createForm(ProductsType::class, $product);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($product);
-            $entityManager->flush();
-
-            $this->addFlash('sucess', 'Produit ajouté');
-        }
-            //return $this->redirectToRoute('products_index');
-
         return $this->render('products/index.html.twig', [
             'products' => $productsRepository->findAll(),
         ]);
@@ -59,6 +46,9 @@ class ProductsController extends AbstractController
     #[Route('/{id}', name: 'products_show', methods: ['GET'])]
     public function show(Products $product): Response
     {
+
+
+
         return $this->render('products/show.html.twig', [
             'product' => $product,
         ]);
@@ -73,7 +63,9 @@ class ProductsController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('products_index');
+            $this->addFlash('success', 'Article modifié !');
+
+            return $this->redirectToRoute('app_homepage');
         }
 
         return $this->render('products/edit.html.twig', [
@@ -89,8 +81,10 @@ class ProductsController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($product);
             $entityManager->flush();
+
+            $this->addFlash('success', 'Produit supprimé !');
         }
 
-        return $this->redirectToRoute('products_index');
+        return $this->redirectToRoute('app_homepage');
     }
 }

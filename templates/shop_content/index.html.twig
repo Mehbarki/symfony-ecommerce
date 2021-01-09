@@ -1,0 +1,37 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ShopContent index{% endblock %}
+
+{% block body %}
+    <h1>ShopContent index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Quantity</th>
+                <th>Create_at</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for shop_content in shop_contents %}
+            <tr>
+                <td>{{ shop_content.id }}</td>
+                <td>{{ shop_content.quantity }}</td>
+                <td>{{ shop_content.createAt ? shop_content.createAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td>
+                    <a href="{{ path('shop_content_show', {'id': shop_content.id}) }}">show</a>
+                    <a href="{{ path('shop_content_edit', {'id': shop_content.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="4">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('shop_content_new') }}">Create new</a>
+{% endblock %}

@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ShopContentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,74 +20,92 @@ class ShopContent
     private $id;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToMany(targetEntity=Products::class, inversedBy="shopContents")
      */
     private $product;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\ManyToOne(targetEntity=Shop::class, inversedBy="shopContents")
+     * @ORM\JoinColumn(nullable=false)
      */
     private $shop;
 
     /**
      * @ORM\Column(type="integer")
      */
-    private $amount;
+    private $quantity;
 
     /**
      * @ORM\Column(type="datetime")
      */
-    private $date_add;
+    private $create_at;
+
+    public function __construct()
+    {
+        $this->product = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getProduct(): ?int
+    /**
+     * @return Collection|Products[]
+     */
+    public function getProduct(): Collection
     {
         return $this->product;
     }
 
-    public function setProduct(int $product): self
+    public function addProduct(Products $product): self
     {
-        $this->product = $product;
+        if (!$this->product->contains($product)) {
+            $this->product[] = $product;
+        }
 
         return $this;
     }
 
-    public function getShop(): ?int
+    public function removeProduct(Products $product): self
+    {
+        $this->product->removeElement($product);
+
+        return $this;
+    }
+
+    public function getShop(): ?Shop
     {
         return $this->shop;
     }
 
-    public function setShop(int $shop): self
+    public function setShop(?Shop $shop): self
     {
         $this->shop = $shop;
 
         return $this;
     }
 
-    public function getAmount(): ?int
+    public function getQuantity(): ?int
     {
-        return $this->amount;
+        return $this->quantity;
     }
 
-    public function setAmount(int $amount): self
+    public function setQuantity(int $quantity): self
     {
-        $this->amount = $amount;
+        $this->quantity = $quantity;
 
         return $this;
     }
 
-    public function getDateAdd(): ?\DateTimeInterface
+    public function getCreateAt(): ?\DateTimeInterface
     {
-        return $this->date_add;
+        return $this->create_at;
     }
 
-    public function setDateAdd(\DateTimeInterface $date_add): self
+    public function setCreateAt(\DateTimeInterface $create_at): self
     {
-        $this->date_add = $date_add;
+        $this->create_at = $create_at;
 
         return $this;
     }

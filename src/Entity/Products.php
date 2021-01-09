@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ProductsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -41,6 +43,16 @@ class Products
      * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $image;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=ShopContent::class, mappedBy="product")
+     */
+    private $shopContents;
+
+    public function __construct()
+    {
+        $this->shopContents = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -103,6 +115,33 @@ class Products
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|ShopContent[]
+     */
+    public function getShopContents(): Collection
+    {
+        return $this->shopContents;
+    }
+
+    public function addShopContent(ShopContent $shopContent): self
+    {
+        if (!$this->shopContents->contains($shopContent)) {
+            $this->shopContents[] = $shopContent;
+            $shopContent->addProduct($this);
+        }
+
+        return $this;
+    }
+
+    public function removeShopContent(ShopContent $shopContent): self
+    {
+        if ($this->shopContents->removeElement($shopContent)) {
+            $shopContent->removeProduct($this);
+        }
 
         return $this;
     }
