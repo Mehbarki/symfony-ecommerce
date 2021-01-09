@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Shop;
+use App\Entity\ShopContent;
 use App\Form\ShopType;
 use App\Repository\ShopRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,10 +15,27 @@ use Symfony\Component\Routing\Annotation\Route;
 class ShopController extends AbstractController
 {
     #[Route('/', name: 'shop_index', methods: ['GET'])]
-    public function index(ShopRepository $shopRepository): Response
+    public function index(): Response
     {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $content = $em->getRepository(ShopContent::class)->findAll();
+
+
+
+        if(!$this->getUser()) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $user = $this->getUser();
+        $content = new ShopContent();
+
+
+
+
         return $this->render('shop/index.html.twig', [
-            'shops' => $shopRepository->findAll(),
+            'shops' => $content,
         ]);
     }
 

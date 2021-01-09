@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon compte{% endblock %}
+
+{% block body %}
+    <h1>Mon compte</h1>
+
+    <div class="container mt-5">
+        <h1></h1>
+
+        {{ form_start(form) }}
+        {{ form_row(form.name) }}
+        {{ form_end(form) }}
+
+    </div>
+
+    <h1>Mes dernières commandes</h1>
+
+
+
+    <a href="{{ path('app_homepage') }}">Accueil</a>
+
+{% endblock %}

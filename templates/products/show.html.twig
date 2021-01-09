@@ -39,4 +39,9 @@
     {% if is_granted('ROLE_ADMIN') %}
     <a href="{{ path('products_edit', {'id': product.id}) }}">edit</a>
     {% endif %}
+
+    {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_USER') %}
+        <a href="{{ path('shop_new', {'id': product.id}) }}">Ajouter au panier</a>
+    {% endif %}
+
 {% endblock %}

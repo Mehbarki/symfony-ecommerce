@@ -1,20 +1,69 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello HomeController!{% endblock %}
+{% block title %}Accueil{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <h1>Page d'accueil</h1>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            <div style="font-size: 20px" class="{{ type }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/wamp64/www/symfony/examen/app/src/Controller/HomeController.php'|file_link(0) }}">src/Controller/HomeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/wamp64/www/symfony/examen/app/templates/home/index.html.twig'|file_link(0) }}">templates/home/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Description</th>
+            <th>Prix</th>
+            <th>Stock</th>
+            <th>Image</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.description }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stock }}</td>
+                <td> <img style="height: 50px; width: 50px" src="{{ asset('/uploads/' ~ product.image) }}"/></td>
+                <td>
+                    <a href="{{ path('products_show', {'id': product.id}) }}">Voir</a>
+                    {#  <a href="{{ path('products_edit', {'id': product.id}) }}">edit</a> #}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="7">Aucun produits trouvé</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {#  <a href="{{ path('products_new') }}">Create new</a>#}
+
+
+    {% if is_granted('ROLE_ADMIN') %}
+        <h1>Créer un nouveau produit (admin)</h1>
+
+        {{ include('products/_form.html.twig') }}
+
+
+    {% endif %}
+
+    {% if is_granted('ROLE_USER') or is_granted('ROLE_ADMIN') %}
+    <a href="{{ path('shop_index') }}">Panier</a>
+    <a href="{{ path('app_profile') }}">Mon compte</a>
+     {% else %}
+            <a href="{{ path('app_login') }}">Connexion</a>
+
+    {% endif %}
+
+
+
 {% endblock %}
